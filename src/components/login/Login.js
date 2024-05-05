@@ -4,6 +4,7 @@ import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,12 +22,17 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     gap: theme.spacing(2),
   },
+  error: {
+    color: 'red',
+  },
 }));
 
 const Login = () => {
   const classes = useStyles();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
@@ -36,10 +42,50 @@ const Login = () => {
     setPassword(event.target.value);
   };
 
-  const handleLogin = () => {
-    // Add your login logic here
-    console.log('Username:', username);
-    console.log('Password:', password);
+  const handleLogin = async () => {
+    const loginData = {
+      username,
+      password,
+    };
+    const newErrors = {};
+
+    if (!username) {
+      newErrors.username = 'First Name is required';
+    }
+    if (!password) {
+      newErrors.password = 'Password is required';
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+    try {
+      const response = await fetch('http://localhost:8080/api/user/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(loginData),
+      });
+
+      if (response.ok) {
+        var UserResponse = await response.json();
+        console.log(UserResponse)
+        if(UserResponse.status === "error"){
+          alert(UserResponse.message)
+        }
+        if(UserResponse.status === "success"){
+          navigate('/home');
+          console.log('User logged in successfully');
+        }
+      } else {
+        // Error signing up
+        console.error('Error signing up:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   return (
@@ -52,6 +98,8 @@ const Login = () => {
             variant="outlined"
             value={username}
             onChange={handleUsernameChange}
+            error={errors.username}
+            helperText={errors.username}
           />
           <TextField
             id="password"
@@ -60,6 +108,8 @@ const Login = () => {
             variant="outlined"
             value={password}
             onChange={handlePasswordChange}
+            error={errors.password}
+            helperText={errors.password}
           />
           <Button variant="contained" color="primary" onClick={handleLogin}>
             Login
