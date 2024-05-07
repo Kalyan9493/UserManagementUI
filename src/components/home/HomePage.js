@@ -1,24 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+
 
 const HomePage = () => {
 
   const [userData, setUserData] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch data from API
-    fetch('http://localhost:8080/api/user')
-      .then(response => response.json())
-      .then(responseData => {
-        
-        setUserData(responseData.data);
-        // // Set the fetched data in state
-        // setUserData(data);
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
-  }, []); 
+
+    const fetchUsersData = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const response = await fetch('http://localhost:8080/api/user', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          if (response.ok) {
+            const responseData = await response.json();
+            setUserData(responseData.data);
+          } else {
+            navigate('/');
+            console.error('Error fetching data:', response.statusText);
+          }
+        } catch (error) {
+          navigate('/');
+          console.error('Fetch error:', error);
+        }
+      } else {
+        navigate('/');
+        // Handle case where token is not available (user is not authenticated)
+        console.error('User is not authenticated');
+      }
+    };
+
+    fetchUsersData();
+  }, []);
+
 
   return (
     <div style={{ paddingTop: '20px' }}>

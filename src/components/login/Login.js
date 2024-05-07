@@ -76,6 +76,8 @@ const Login = () => {
           alert(UserResponse.message)
         }
         if(UserResponse.status === "success"){
+          localStorage.setItem('token', UserResponse.data.token);
+          localStorage.setItem('user', JSON.stringify(UserResponse.data.emailId));
           navigate('/home');
           console.log('User logged in successfully');
         }
