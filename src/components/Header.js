@@ -4,9 +4,9 @@ import MenuIcon from '@mui/icons-material/Menu';
 
 const Header = () => {
   return (
-    <AppBar position="static" sx={{ backgroundColor: '#214946' }}>
+    <AppBar position="static" sx={{ backgroundColor: '#464A4D' }}>
       <Toolbar>
-        <IconButton
+        {/* <IconButton
           size="large"
           edge="start"
           color="inherit"
@@ -14,7 +14,7 @@ const Header = () => {
           sx={{ mr: 2 }}
         >
           <MenuIcon />
-        </IconButton>
+        </IconButton> */}
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           User Management System
         </Typography>

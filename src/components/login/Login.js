@@ -5,6 +5,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import {postData} from '../request'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -61,7 +62,7 @@ const Login = () => {
       return;
     }
     try {
-      const response = await fetch('http://localhost:8080/api/user/login', {
+      const response = await fetch(process.env.REACT_APP_BASE_URL + '/user/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -78,7 +79,7 @@ const Login = () => {
         if(UserResponse.status === "success"){
           localStorage.setItem('token', UserResponse.data.token);
           localStorage.setItem('user', JSON.stringify(UserResponse.data.emailId));
-          navigate('/home');
+          navigate('/test');
           console.log('User logged in successfully');
         }
       } else {
