@@ -5,16 +5,17 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import {postData} from '../request'
+import { useAuth } from '../../AuthContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    position: 'center',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: '100vh',
-    backgroundColor: '#f0f0f0',
+    minHeight: '70vh',
+    backgroundColor: 'inherit',
   },
   form: {
     width: '100%',
@@ -34,6 +35,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
@@ -73,10 +75,11 @@ const Login = () => {
       if (response.ok) {
         var UserResponse = await response.json();
         console.log(UserResponse)
-        if(UserResponse.status === "error"){
+        if (UserResponse.status === "error") {
           alert(UserResponse.message)
         }
-        if(UserResponse.status === "success"){
+        if (UserResponse.status === "success") {
+          login();
           localStorage.setItem('token', UserResponse.data.token);
           localStorage.setItem('user', JSON.stringify(UserResponse.data.emailId));
           navigate('/test');
@@ -92,37 +95,40 @@ const Login = () => {
   };
 
   return (
-    <Container className={classes.root} maxWidth="sm">
-      <div>
-        <form className={classes.form} noValidate autoComplete="off">
-          <TextField
-            id="username"
-            label="Email/Mobile"
-            variant="outlined"
-            value={username}
-            onChange={handleUsernameChange}
-            error={errors.username}
-            helperText={errors.username}
-          />
-          <TextField
-            id="password"
-            label="Password"
-            type="password"
-            variant="outlined"
-            value={password}
-            onChange={handlePasswordChange}
-            error={errors.password}
-            helperText={errors.password}
-          />
-          <Button variant="contained" color="primary" onClick={handleLogin}>
-            Login
-          </Button>
-        </form>
-        <p>
-          Don't have an account? <Link to="/register">Register</Link>
-        </p>
-      </div>
-    </Container>
+    <div style={{ paddingTop: '20px'}}>
+      <Container className={classes.root} maxWidth="sm">
+        <div>
+          <form className={classes.form} noValidate autoComplete="off">
+            <TextField
+              id="username"
+              label="Email/Mobile"
+              variant="outlined"
+              value={username}
+              onChange={handleUsernameChange}
+              error={errors.username}
+              helperText={errors.username}
+            />
+            <TextField
+              id="password"
+              label="Password"
+              type="password"
+              variant="outlined"
+              value={password}
+              onChange={handlePasswordChange}
+              error={errors.password}
+              helperText={errors.password}
+            />
+            <Button variant="contained" color="primary" onClick={handleLogin}>
+              Login
+            </Button>
+          </form>
+          <p>
+            Don't have an account? <Link to="/register">Register</Link>
+          </p>
+        </div>
+      </Container>
+    </div>
+
   );
 };
 
