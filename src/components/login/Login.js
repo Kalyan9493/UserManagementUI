@@ -75,15 +75,14 @@ const Login = () => {
       if (response.ok) {
         var UserResponse = await response.json();
         console.log(UserResponse)
-        if (UserResponse.status === "error") {
+        if (UserResponse.status !== 200) {
           alert(UserResponse.message)
+          return;
         }
-        if (UserResponse.status === "success") {
           login();
           localStorage.setItem('token', UserResponse.data.token);
           localStorage.setItem('user', JSON.stringify(UserResponse.data.emailId));
-          navigate('/test');
-        }
+          navigate('/home');
       } else {
         console.error('Error signing up:', response.statusText);
       }
