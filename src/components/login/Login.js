@@ -83,10 +83,8 @@ const Login = () => {
           localStorage.setItem('token', UserResponse.data.token);
           localStorage.setItem('user', JSON.stringify(UserResponse.data.emailId));
           navigate('/test');
-          console.log('User logged in successfully');
         }
       } else {
-        // Error signing up
         console.error('Error signing up:', response.statusText);
       }
     } catch (error) {

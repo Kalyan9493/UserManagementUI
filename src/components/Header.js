@@ -24,7 +24,7 @@ const Header = () => {
     <AppBar position="static" className={classes.appBar}>
       <Toolbar>
         <Typography variant="h6" style={{ flexGrow: 1, color: 'black' }}>
-          Practice Test
+          Review System
         </Typography>
         {isLoggedIn ? (
           <Button onClick={handleLogout}>Logout</Button>
